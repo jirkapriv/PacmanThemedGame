@@ -1,0 +1,108 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "level1Map.tmx",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "imagesMapTSX/border_corner_in_ul.tsx": {
+            "scaleInDock": 32
+        },
+        "imagesMapTSX/border_corner_ld.tsx": {
+            "scaleInDock": 23
+        },
+        "imagesMapTSX/border_corner_lu.tsx": {
+            "scaleInDock": 45
+        },
+        "imagesMapTSX/border_corner_rd.tsx": {
+            "scaleInDock": 32
+        },
+        "imagesMapTSX/border_corner_ru.tsx": {
+            "scaleInDock": 16
+        },
+        "imagesMapTSX/border_corner_ur.tsx": {
+            "scaleInDock": 23
+        },
+        "imagesMapTSX/border_in_dl.tsx": {
+            "scaleInDock": 23
+        },
+        "imagesMapTSX/border_in_dr.tsx": {
+            "scaleInDock": 16
+        },
+        "imagesMapTSX/border_lr.tsx": {
+            "scaleInDock": 32
+        },
+        "imagesMapTSX/border_lr_d.tsx": {
+            "scaleInDock": 45
+        },
+        "imagesMapTSX/border_ud.tsx": {
+            "scaleInDock": 23
+        },
+        "imagesMapTSX/border_ud_r.tsx": {
+            "scaleInDock": 45
+        },
+        "imagesMapTSX/branaLevo.tsx": {
+            "scaleInDock": 16
+        },
+        "imagesMapTSX/branaMid.tsx": {
+            "scaleInDock": 16
+        },
+        "imagesMapTSX/branaPravo.tsx": {
+            "scaleInDock": 16
+        },
+        "imagesMapTSX/in_border_d_end.tsx": {
+            "scaleInDock": 45
+        },
+        "imagesMapTSX/in_border_left_end.tsx": {
+            "scaleInDock": 23
+        },
+        "imagesMapTSX/in_border_lr.tsx": {
+            "scaleInDock": 16
+        },
+        "imagesMapTSX/in_border_r_end.tsx": {
+            "scaleInDock": 23
+        },
+        "imagesMapTSX/in_border_ud.tsx": {
+            "scaleInDock": 32
+        },
+        "imagesMapTSX/in_border_up_end.tsx": {
+            "scaleInDock": 16
+        },
+        "imagesMapTSX/jednaJedna.tsx": {
+            "scaleInDock": 23
+        },
+        "imagesMapTSX/rohLevo.tsx": {
+            "scaleInDock": 23
+        },
+        "imagesMapTSX/rohPravoHore.tsx": {
+            "scaleInDock": 23
+        },
+        "level1Map.tmx": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 71.25,
+                "y": 80.75
+            }
+        }
+    },
+    "map.height": 40,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 8,
+    "map.tileWidth": 8,
+    "map.width": 40,
+    "openFiles": [
+        "level1Map.tmx"
+    ],
+    "project": "level1Map.tiled-project",
+    "recentFiles": [
+        "level1Map.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 8,
+        "width": 8
+    }
+}
