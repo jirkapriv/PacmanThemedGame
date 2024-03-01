@@ -64,9 +64,9 @@ while True:
 
 
     #teleport na druhou stranu
-    if player_rect.x < 0-player.get_width():
+    if player_rect.x < 0-(player.get_width()//2):						#HUH
         player_rect.x = screen.get_width()
-    elif player_rect.x > screen.get_width()+player.get_width():
+    elif player_rect.x > screen.get_width()-(player.get_width()//4):	#HUH vubec nevim proc tady je deleno 4, ale kdyz tam bude ta 2 tak zmizi z mapy takze to musi byt nesymetricke
         player_rect.x = 0
 
 
