@@ -3,7 +3,7 @@ import sys
 import pytmx
 pygame.init()
 
-screen_size = [760, 800]            #zkusim jsem random number (odhad)
+screen_size = [755, 800]            #zkusim jsem random number (odhad)
 screen = pygame.display.set_mode((screen_size[0], screen_size[1]))
 clock = pygame.time.Clock()
 font = pygame.font.Font(None, 36)   #velikost pisma
@@ -64,10 +64,12 @@ while True:
 
 
     #teleport na druhou stranu
-    if player_rect.x < 0-(player.get_width()//2):						#HUH
+    if (player_rect.x < 0-player.get_width()//2) and actionX == "left":		#HUH
         player_rect.x = screen.get_width()
-    elif player_rect.x > screen.get_width()-(player.get_width()//4):	#HUH vubec nevim proc tady je deleno 4, ale kdyz tam bude ta 2 tak zmizi z mapy takze to musi byt nesymetricke
+        #player_rect.y = positionY
+    elif player_rect.x > ((screen.get_width()-player.get_width())+player.get_width()//2) and actionX == "right":	#HUH vubec nevim proc tady je deleno 4, ale kdyz tam bude ta 2 tak zmizi z mapy takze to musi byt nesymetricke
         player_rect.x = 0
+        #player_rect.y = positionY
 
 
     for layer in tmx_map.visible_layers:
@@ -123,17 +125,11 @@ while True:
             positionX = player_rect.x
         actionY = "up"
         mainAction = actionY
-        """print(positionX)
-        print(player_rect.x)
-        print("--------------")"""
     if pressed[pygame.K_s]:			#pokud jde dolu
         if(actionY != "down"):
             positionX = player_rect.x
         actionY = "down"
         mainAction = actionY
-        """print(positionX)
-        print(player_rect.x)
-        print("--------------")"""
 	
     if pressed[pygame.K_a]:			#pokud jde do leva
         if(actionX != "left"):
@@ -146,29 +142,25 @@ while True:
         actionX = "right"
         mainAction = actionX
     
-    #urceni smeru #3                              #potreba zjistit zda muze projit pri mainPohybu
-    if actionX != None or actionY != None:
-        if actionX == "right" or actionX == "left" and actionY == "up" or actionY == "down":
-            if positionY != player_rect.y and mainAction == "up" or mainAction == "down":
-                    #if     tady bude tedy podminka s collision zda muze projit 
-                    actionX = None
-            """elif positionX != player_rect.x and mainAction == "right" or mainAction == "left":
-                actionY = None"""
+    #urceni smeru #4                        dfsghdfghdfgbrddhbgdgfhbdfghbdfghbfgdhbdfghbdfghbdfghb      (malem jsem rozbil klavesu kvuli teto podmince)
 
-
-    #urceni smeru #2
-    """if positionY != player_rect.y and actionY != None:
-        print("X",positionX, player_rect.x)
-        if actionX != None:
-                if player_rect.top != platformY.bottom or player_rect.bottom != platformY.top:
-                    actionX = None
-                    print("neni rovno1")
-    if positionX != player_rect.x and actionX != None:
-        print("Y",positionY, player_rect.y)
-        if actionY != None:
-                if player_rect.left != platformX.right or player_rect.right != platformX.left:
-                    actionY = None
-                    print("neni rovno2")"""
+                                                                #problem s velikosti postavicky nejak se proste hejbne a bum spusti se podminka, ale neni tam ulicka treba idk
+    #   pokud se zmeni pozice           pokud jsou dva povely                       pokud jeho plan je jit nahoru ci dolu
+    if (positionY > player_rect.y or positionY < player_rect.y) and (actionX != None and actionY != None) and (mainAction == "up" or mainAction == "down"):
+        print("Y",positionY, player_rect.y, "True", "1")
+        print("MainAction", mainAction)
+        actionX = None
+    #       pokud se zmeni pozice               pokud jsou dva povely                 pokud jeho plan je jit do leva ci do prava
+    elif (positionX > player_rect.x or positionX < player_rect.x) and (actionX != None and actionY != None) and (mainAction == "left" or mainAction == "right"):
+        print("X", positionX, player_rect.x, "True", "2")
+        print("MainAction", mainAction)
+        actionY = None
+    #testovani zmeny pozice
+    """print("-----------------------")
+    print("Y", positionY, player_rect.y)
+    print("X", positionX, player_rect.x)"""
+    #print("MainAction", mainAction)
+    """print("-----------------------")"""
 
 
     screen.blit(player, player_rect)
