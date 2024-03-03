@@ -48,7 +48,7 @@ while True:
         if event.type == pygame.QUIT or pressed[pygame.K_ESCAPE]:
             pygame.quit()
             sys.exit()
-        """if event.type == pygame.KEYDOWN:
+        """if event.type == pygame.KEYDOWN:                     #funkce na pohyb je dole
             if event.key == pygame.K_a:
                 action = "left"
                 player = playerFliped
@@ -119,7 +119,7 @@ while True:
                         player_rect.top = platformY.bottom
 
 
-    #pohyb
+    #///////////////pohyb///////////////
     if pressed[pygame.K_w]:         #pokud jde nahoru
         if(actionY != "up"):
             positionX = player_rect.x
@@ -142,25 +142,42 @@ while True:
         actionX = "right"
         mainAction = actionX
     
-    #urceni smeru #4                        dfsghdfghdfgbrddhbgdgfhbdfghbdfghbfgdhbdfghbdfghbdfghb      (malem jsem rozbil klavesu kvuli teto podmince)
+    #urceni smeru #5                        dfsghdfghdfgbrddhbgdgfhbdfghbdfghbfgdhbdfghbdfghbdfghb      (malem jsem rozbil klavesu kvuli teto podmince)
 
-                                                                #problem s velikosti postavicky nejak se proste hejbne a bum spusti se podminka, ale neni tam ulicka treba idk
+    #problem s velikosti postavicky nejak se proste hejbne a bum spusti se podminka, ale neni tam ulicka treba idk
     #   pokud se zmeni pozice           pokud jsou dva povely                       pokud jeho plan je jit nahoru ci dolu
-    if (positionY > player_rect.y or positionY < player_rect.y) and (actionX != None and actionY != None) and (mainAction == "up" or mainAction == "down"):
-        print("Y",positionY, player_rect.y, "True", "1")
-        print("MainAction", mainAction)
-        actionX = None
+    if ((positionY > player_rect.y and positionY < player_rect.y) or positionY != player_rect.y):
+        if mainAction == "up":
+            player = playerUp
+        elif mainAction == "down":
+            player = playerDown
+        if ((actionX != None and actionY != None) and mainAction == "up" or mainAction == "down"):
+            if (mainAction == "up"):
+                player = playerUp
+            elif(mainAction == "Down"):
+                player = playerDown
+            #print("Y",positionY, player_rect.y, "True", "1")
+            #print("MainAction", mainAction)
+            actionX = None
     #       pokud se zmeni pozice               pokud jsou dva povely                 pokud jeho plan je jit do leva ci do prava
-    elif (positionX > player_rect.x or positionX < player_rect.x) and (actionX != None and actionY != None) and (mainAction == "left" or mainAction == "right"):
-        print("X", positionX, player_rect.x, "True", "2")
-        print("MainAction", mainAction)
-        actionY = None
-    #testovani zmeny pozice
-    """print("-----------------------")
-    print("Y", positionY, player_rect.y)
-    print("X", positionX, player_rect.x)"""
-    #print("MainAction", mainAction)
-    """print("-----------------------")"""
+    elif (positionX > player_rect.x or positionX < player_rect.x) or positionX != player_rect.x:
+        if mainAction == "left":
+            player = playerFliped
+        elif mainAction == "right":
+            player = playerRight
+        if ((actionX != None and actionY != None) and mainAction == "left" or mainAction == "right"):
+            if (mainAction == "left"):
+                player = playerFliped
+            elif(mainAction == "right"):
+                player = playerRight
+            #print("X", positionX, player_rect.x, "True", "2")
+            #print("MainAction", mainAction)
+            actionY = None
+    if mainAction == "left" or mainAction == "right":
+        positionY = player_rect.y
+    elif mainAction == "down" or mainAction == "up":
+        positionX = player_rect.x
+    #///////////////pohyb///////////////
 
 
     screen.blit(player, player_rect)
