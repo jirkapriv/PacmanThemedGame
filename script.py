@@ -8,11 +8,11 @@ screen = pygame.display.set_mode((screen_size[0], screen_size[1]))
 clock = pygame.time.Clock()
 font = pygame.font.Font(None, 36)   #velikost pisma
 game_name = "PacMan"                #nazev hry
-left = False
+"""left = False
 right = False
 down = False
 up = False
-run = True
+run = True"""
 actionX = None
 actionY = None
 mainAction = None
@@ -29,6 +29,7 @@ SPEED = 4
 
 SCALE = 2.5                         #aby nemel misto
 MSCALE = 5
+#hrac
 player = pygame.image.load("pacman2.png").convert()
 player.set_colorkey((255,255,255))
 player = pygame.transform.scale(player, (player.get_width() * SCALE, player.get_height() * SCALE))
@@ -38,6 +39,15 @@ playerRight = player
 playerFliped = pygame.transform.flip(playerFliped, True, False)
 playerDown = pygame.transform.rotate(player,270)
 playerUp = pygame.transform.rotate(player,90)
+
+#nepratele
+enemy1 = pygame.image.load("pinky.png").convert()
+enemy1.set_colorkey((255,255,255))
+enemy1 = pygame.transform.scale(enemy1, (enemy1.get_width() * SCALE, enemy1.get_height() * SCALE))
+enemy1_rect = enemy1.get_rect(topleft=(screen.get_width() / 2, screen.get_width() / 2))
+enemy1_actionX = None        #pro osu x
+enemy1_actionY = None        #pro osu y
+
 
 pygame.display.set_caption(game_name)
 
@@ -50,26 +60,36 @@ while True:
             sys.exit()
         """if event.type == pygame.KEYDOWN:                     #funkce na pohyb je dole
             if event.key == pygame.K_a:
-                action = "left"
-                player = playerFliped
+                actionX = "left"
+                #player = playerFliped
             if event.key == pygame.K_d:
-                action = "right"
-                player = playerRight
+                actionX = "right"
+                #player = playerRight
             if event.key == pygame.K_s:
-                action = "down"
-                player = playerDown
+                actionY = "down"
+                #player = playerDown
             if event.key == pygame.K_w:
-                action = "up"
-                player = playerUp"""
+                actionY = "up"
+                #player = playerUp"""
 
 
     #teleport na druhou stranu
-    if (player_rect.x < 0-player.get_width()//2) and actionX == "left":		#HUH
+    if (player_rect.x < 0-player.get_width()//2) and actionX == "left":
         player_rect.x = screen.get_width()
         #player_rect.y = positionY
-    elif player_rect.x > ((screen.get_width()-player.get_width())+player.get_width()//2) and actionX == "right":	#HUH vubec nevim proc tady je deleno 4, ale kdyz tam bude ta 2 tak zmizi z mapy takze to musi byt nesymetricke
+    elif player_rect.x > ((screen.get_width()-player.get_width())+player.get_width()//2) and actionX == "right":
         player_rect.x = 0
         #player_rect.y = positionY
+
+    #prikaz kam ma jit nepritel                 #potrebovalo by to lepsi logiku
+    if (enemy1_rect.x > player_rect.x):
+        enemy1_actionX = "left"
+    elif (enemy1_rect.x < player_rect.x):
+        enemy1_actionX = "right"
+    if (enemy1_rect.y > player_rect.y):
+        enemy1_actionY = "up"
+    elif (enemy1_rect.y < player_rect.y):
+        enemy1_actionY = "down"
 
 
     for layer in tmx_map.visible_layers:
@@ -88,6 +108,11 @@ while True:
     if actionX == "right":
         player_rect.x += SPEED
 
+    if enemy1_actionX == "left":
+        enemy1_rect.x -= SPEED
+    if enemy1_actionX == "right":
+        enemy1_rect.x += SPEED
+
         
     for layerX in tmx_map.visible_layers:
         if isinstance(layerX, pytmx.TiledTileLayer) and layerX.name == "Vrstva1":
@@ -100,11 +125,23 @@ while True:
                         
                     elif actionX == "left":
                         player_rect.left = platformX.right
+
+                if enemy1_rect.colliderect(platformX):
+                    if enemy1_actionX == "right":
+                        enemy1_rect.right = platformX.left
+                    
+                    elif enemy1_actionX == "left":
+                        enemy1_rect.left = platformX.right
                         
     if actionY == "down":
         player_rect.y += SPEED
     if actionY == "up":
         player_rect.y -= SPEED
+
+    if enemy1_actionY == "down":
+        enemy1_rect.y += SPEED
+    if enemy1_actionY == "up":
+        enemy1_rect.y -= SPEED
         
 
     for layerY in tmx_map.visible_layers:
@@ -117,26 +154,33 @@ while True:
                         player_rect.bottom = platformY.top
                     elif actionY == "up":
                         player_rect.top = platformY.bottom
+                
+                if enemy1_rect.colliderect(platformY):
+                    if enemy1_actionY == "down":
+                        enemy1_rect.bottom = platformY.top
+                    
+                    elif enemy1_actionY == "up":
+                        enemy1_rect.top = platformY.bottom
 
 
     #///////////////pohyb///////////////
-    if pressed[pygame.K_w]:         #pokud jde nahoru
+    if pressed[pygame.K_w] or pressed[pygame.K_UP]:         #pokud jde nahoru
         if(actionY != "up"):
             positionX = player_rect.x
         actionY = "up"
         mainAction = actionY
-    if pressed[pygame.K_s]:			#pokud jde dolu
+    if pressed[pygame.K_s] or pressed[pygame.K_DOWN]:			#pokud jde dolu
         if(actionY != "down"):
             positionX = player_rect.x
         actionY = "down"
         mainAction = actionY
 	
-    if pressed[pygame.K_a]:			#pokud jde do leva
+    if pressed[pygame.K_a] or pressed[pygame.K_LEFT]:			#pokud jde do leva
         if(actionX != "left"):
             positionY = player_rect.y
         actionX = "left"
         mainAction = actionX
-    if pressed[pygame.K_d]:			#pokud jde do prava
+    if pressed[pygame.K_d] or pressed[pygame.K_RIGHT]:			#pokud jde do prava
         if(actionX != "right"):
             positionY = player_rect.y
         actionX = "right"
@@ -181,6 +225,7 @@ while True:
 
 
     screen.blit(player, player_rect)
+    screen.blit(enemy1, enemy1_rect)
     
     pygame.display.flip()
     clock.tick(60)
