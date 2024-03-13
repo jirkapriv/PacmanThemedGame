@@ -8,11 +8,6 @@ screen = pygame.display.set_mode((screen_size[0], screen_size[1]))
 clock = pygame.time.Clock()
 font = pygame.font.Font(None, 36)   #velikost pisma
 game_name = "PacMan"                #nazev hry
-"""left = False
-right = False
-down = False
-up = False
-run = True"""
 actionX = None
 actionY = None
 mainAction = None
@@ -47,6 +42,9 @@ enemy1 = pygame.transform.scale(enemy1, (enemy1.get_width() * SCALE, enemy1.get_
 enemy1_rect = enemy1.get_rect(topleft=(screen.get_width() / 2, screen.get_width() / 2))
 enemy1_actionX = None        #pro osu x
 enemy1_actionY = None        #pro osu y
+enemy1_check_plan = None
+enemy1_plan_move = None
+enemy1_move_done = True
 
 
 pygame.display.set_caption(game_name)
@@ -82,14 +80,37 @@ while True:
         #player_rect.y = positionY
 
     #prikaz kam ma jit nepritel                 #potrebovalo by to lepsi logiku
+    #pro osu x
     if (enemy1_rect.x > player_rect.x):
         enemy1_actionX = "left"
     elif (enemy1_rect.x < player_rect.x):
         enemy1_actionX = "right"
+    else:
+        enemy1_actionX = None
+    #pro osu y
     if (enemy1_rect.y > player_rect.y):
         enemy1_actionY = "up"
     elif (enemy1_rect.y < player_rect.y):
         enemy1_actionY = "down"
+    else:
+        enemy1_actionY = None
+
+    if enemy1_actionX == None:
+        enemy1_check_plan = "down"
+        if enemy1_check_plan == "down" and enemy1_move_done == True:
+            enemy1_move_done = False
+            enemy1_plan_move = "down"
+    elif enemy1_actionY == None:
+        enemy1_check_plan = "left"
+        if enemy1_check_plan == "left" and enemy1_move_done == True:
+            enemy1_move_done = False
+            enemy1_plan_move = "left"
+    else:
+        enemy1_check_plan = None
+
+
+    print(enemy1_check_plan, enemy1_actionX, enemy1_actionY)
+    
 
 
     for layer in tmx_map.visible_layers:
