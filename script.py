@@ -3,7 +3,7 @@ import sys
 import pytmx
 pygame.init()
 
-screen_size = [755, 800]            #zkusim jsem random number (odhad)
+screen_size = [840, 840]            #zkusim jsem random number (odhad)
 screen = pygame.display.set_mode((screen_size[0], screen_size[1]))
 clock = pygame.time.Clock()
 font = pygame.font.Font(None, 36)   #velikost pisma
@@ -33,7 +33,7 @@ MSCALE = 5
 player = pygame.image.load("pacman2.png").convert()
 player.set_colorkey((255,255,255))
 player = pygame.transform.scale(player, (player.get_width() * SCALE, player.get_height() * SCALE))
-player_rect = player.get_rect(topleft=(screen.get_width() / 2, screen.get_height() / 2))
+player_rect = player.get_rect(topleft=(screen.get_width() / 2 - 220, screen.get_height() / 2))
 playerFliped = player
 playerRight = player
 playerFliped = pygame.transform.flip(playerFliped, True, False)
@@ -48,9 +48,15 @@ enemy1_rect = enemy1.get_rect(topleft=(screen.get_width() / 2, screen.get_width(
 enemy1_actionX = None        #pro osu x
 enemy1_actionY = None        #pro osu y
 
+pointList = []
+
 
 pygame.display.set_caption(game_name)
-
+for layer in tmx_map.visible_layers:
+    if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "Vrstva2":
+        for x, y, image in layer.tiles():
+            pointList.append([x * 8 * MSCALE + (8 * MSCALE)/2 , y * 8 * MSCALE + (8 * MSCALE)/2])
+        
 while True:
     screen.fill(BLACK)
     pressed = pygame.key.get_pressed()
@@ -92,8 +98,8 @@ while True:
         enemy1_actionY = "down"
 
 
-    for layer in tmx_map.visible_layers:
-        if isinstance(layer, pytmx.TiledTileLayer):
+    for layer in tmx_map.visible_layers :
+        if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "Vrstva1":
             for x, y, image in layer.tiles():
                 image.convert()
                 image.set_colorkey(WHITE)
@@ -101,7 +107,12 @@ while True:
                     image, (8 * MSCALE, 8 * MSCALE))
                 screen.blit(scaled_image, (x * 8 *
                             MSCALE, y * 8 * MSCALE))
-
+    
+    for x, y in enumerate(pointList):
+        pygame.draw.circle(screen, (255,255,255), (y[0], y[1]), 3)
+        if player_rect.colliderect((y[0], y[1], 2, 2)):
+            pointList.pop(x)
+        
 
     if actionX == "left":
         player_rect.x -= SPEED
@@ -114,9 +125,9 @@ while True:
         enemy1_rect.x += SPEED
 
         
-    for layerX in tmx_map.visible_layers:
-        if isinstance(layerX, pytmx.TiledTileLayer) and layerX.name == "Vrstva1":
-            for x, y, tile in layerX.tiles():
+    for layer in tmx_map.visible_layers:
+        if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "Vrstva1":
+            for x, y, tile in layer.tiles():
                 platformX = pygame.Rect(x * 8 * MSCALE, y * 8 * MSCALE,
                                         8 * MSCALE, 8 * MSCALE)
                 if player_rect.colliderect(platformX):
