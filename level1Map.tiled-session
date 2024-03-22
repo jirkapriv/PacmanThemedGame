@@ -79,12 +79,24 @@
         "imagesMapTSX/rohPravoHore.tsx": {
             "scaleInDock": 23
         },
+        "imagesMapTSX/transp.tsx": {
+            "scaleInDock": 32
+        },
+        "imagesMapTSX/weo.tsx": {
+            "scaleInDock": 23
+        },
+        "imagesMapTSX/weo2.tsx": {
+            "scaleInDock": 1
+        },
+        "imagesMapTSX/weo3.tsx": {
+            "scaleInDock": 1
+        },
         "level1Map.tmx": {
-            "scale": 4,
-            "selectedLayer": 0,
+            "scale": 8,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 71.25,
-                "y": 80.75
+                "x": 103.625,
+                "y": 65.125
             }
         }
     },

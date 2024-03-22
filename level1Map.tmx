@@ -1,52 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down"
-  width="20" height="20" tilewidth="8" tileheight="8" infinite="0" nextlayerid="2" nextobjectid="1">
-  <tileset firstgid="1" source="imagesMapTSX/branaLevo.tsx" />
-  <tileset firstgid="2" source="imagesMapTSX/branaMid.tsx" />
-  <tileset firstgid="3" source="imagesMapTSX/branaPravo.tsx" />
-  <tileset firstgid="4" source="imagesMapTSX/jednaJedna.tsx" />
-  <tileset firstgid="5" source="imagesMapTSX/rohLevo.tsx" />
-  <tileset firstgid="6" source="imagesMapTSX/rohPravoHore.tsx" />
-  <tileset firstgid="7" source="imagesMapTSX/border_in_dr.tsx" />
-  <tileset firstgid="8" source="imagesMapTSX/border_lr.tsx" />
-  <tileset firstgid="9" source="imagesMapTSX/border_ud.tsx" />
-  <tileset firstgid="10" source="imagesMapTSX/in_border_d_end.tsx" />
-  <tileset firstgid="11" source="imagesMapTSX/in_border_left_end.tsx" />
-  <tileset firstgid="12" source="imagesMapTSX/in_border_lr.tsx" />
-  <tileset firstgid="13" source="imagesMapTSX/in_border_r_end.tsx" />
-  <tileset firstgid="14" source="imagesMapTSX/in_border_ud.tsx" />
-  <tileset firstgid="15" source="imagesMapTSX/in_border_up_end.tsx" />
-  <tileset firstgid="16" source="imagesMapTSX/border_corner_in_ul.tsx" />
-  <tileset firstgid="17" source="imagesMapTSX/border_corner_ld.tsx" />
-  <tileset firstgid="18" source="imagesMapTSX/border_corner_lu.tsx" />
-  <tileset firstgid="19" source="imagesMapTSX/border_corner_rd.tsx" />
-  <tileset firstgid="20" source="imagesMapTSX/border_corner_ru.tsx" />
-  <tileset firstgid="21" source="imagesMapTSX/border_corner_ur.tsx" />
-  <tileset firstgid="22" source="imagesMapTSX/border_in_dl.tsx" />
-  <tileset firstgid="23" source="imagesMapTSX/border_lr_d.tsx" />
-  <tileset firstgid="24" source="imagesMapTSX/border_ud_r.tsx" />
-  <layer id="1" name="Vrstva1" width="20" height="20">
-    <data encoding="csv">
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      0,18,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,20,0,0,
-      0,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,24,0,0,
-      0,9,0,11,12,1073741837,0,2147483654,12,12,12,6,0,3221225485,12,13,0,24,0,0,
-      0,9,0,0,0,0,0,14,0,0,0,14,0,0,0,0,0,24,0,0,
-      0,17,23,23,22,0,1073741829,2147483653,0,0,0,5,3221225477,0,7,23,23,19,0,0,
-      0,0,0,0,9,0,5,12,1,2,3,12,2147483653,0,24,0,0,0,0,0,
-      0,0,0,0,9,0,0,0,0,0,0,0,0,0,24,0,0,0,0,0,
-      8,8,8,8,16,0,11,13,0,4,0,11,13,0,21,8,8,8,8,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-      23,23,23,23,22,0,2147483654,12,12,12,12,12,6,0,7,23,23,23,23,0,
-      0,0,0,0,9,0,14,0,0,0,0,0,14,0,24,0,0,0,0,0,
-      0,0,0,0,9,0,14,0,15,0,15,0,14,0,24,0,0,0,0,0,
-      0,18,8,8,16,0,10,0,14,0,14,0,10,0,21,8,8,20,0,0,
-      0,9,0,0,0,0,0,0,14,0,14,0,0,0,0,0,0,24,0,0,
-      0,9,0,11,12,12,13,0,10,0,10,0,11,12,12,13,0,24,0,0,
-      0,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,24,0,0,
-      0,17,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,19,0,0,
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="21" height="20" tilewidth="8" tileheight="8" infinite="0" nextlayerid="3" nextobjectid="1">
+ <tileset firstgid="1" source="imagesMapTSX/branaLevo.tsx"/>
+ <tileset firstgid="2" source="imagesMapTSX/branaMid.tsx"/>
+ <tileset firstgid="3" source="imagesMapTSX/branaPravo.tsx"/>
+ <tileset firstgid="4" source="imagesMapTSX/jednaJedna.tsx"/>
+ <tileset firstgid="5" source="imagesMapTSX/rohLevo.tsx"/>
+ <tileset firstgid="6" source="imagesMapTSX/rohPravoHore.tsx"/>
+ <tileset firstgid="7" source="imagesMapTSX/border_in_dr.tsx"/>
+ <tileset firstgid="8" source="imagesMapTSX/border_lr.tsx"/>
+ <tileset firstgid="9" source="imagesMapTSX/border_ud.tsx"/>
+ <tileset firstgid="10" source="imagesMapTSX/in_border_d_end.tsx"/>
+ <tileset firstgid="11" source="imagesMapTSX/in_border_left_end.tsx"/>
+ <tileset firstgid="12" source="imagesMapTSX/in_border_lr.tsx"/>
+ <tileset firstgid="13" source="imagesMapTSX/in_border_r_end.tsx"/>
+ <tileset firstgid="14" source="imagesMapTSX/in_border_ud.tsx"/>
+ <tileset firstgid="15" source="imagesMapTSX/in_border_up_end.tsx"/>
+ <tileset firstgid="16" source="imagesMapTSX/border_corner_in_ul.tsx"/>
+ <tileset firstgid="17" source="imagesMapTSX/border_corner_ld.tsx"/>
+ <tileset firstgid="18" source="imagesMapTSX/border_corner_lu.tsx"/>
+ <tileset firstgid="19" source="imagesMapTSX/border_corner_rd.tsx"/>
+ <tileset firstgid="20" source="imagesMapTSX/border_corner_ru.tsx"/>
+ <tileset firstgid="21" source="imagesMapTSX/border_corner_ur.tsx"/>
+ <tileset firstgid="22" source="imagesMapTSX/border_in_dl.tsx"/>
+ <tileset firstgid="23" source="imagesMapTSX/border_lr_d.tsx"/>
+ <tileset firstgid="24" source="imagesMapTSX/border_ud_r.tsx"/>
+ <tileset firstgid="25" source="imagesMapTSX/weo.tsx"/>
+ <tileset firstgid="29" source="imagesMapTSX/weo2.tsx"/>
+ <tileset firstgid="30" source="imagesMapTSX/weo3.tsx"/>
+ <tileset firstgid="31" source="imagesMapTSX/transp.tsx"/>
+ <layer id="1" name="Vrstva1" width="21" height="20">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+2147483668,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,20,
+2147483672,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,24,
+2147483672,0,15,0,11,12,1073741837,0,15,0,15,0,15,0,3221225485,12,13,0,15,0,24,
+2147483672,0,14,0,0,0,0,0,14,0,1073741839,0,14,0,0,0,0,0,14,0,24,
+2147483672,0,5,12,2147483659,0,2147483661,12,2147483653,0,0,0,5,12,13,0,11,12,2147483653,0,24,
+2147483672,0,0,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,24,
+2147483672,0,11,12,3221225477,0,1073741834,0,1073741829,12,30,12,3221225477,0,1073741834,0,1073741829,12,2147483659,0,24,
+2147483672,0,0,0,3758096396,0,10,0,1610612739,0,0,0,14,0,10,0,14,0,0,0,24,
+2147483669,0,2147483663,0,10,0,0,0,1610612738,0,0,0,14,0,0,0,10,0,15,0,21,
+0,0,2147483662,0,0,0,1073741834,0,536870915,0,0,0,14,0,1073741834,0,0,0,14,0,0,
+2147483655,0,2147483658,0,1073741834,0,3758096396,0,5,12,12,12,2147483653,0,3758096396,0,1073741834,0,10,0,7,
+2147483672,0,0,0,14,0,3758096396,0,0,0,0,0,0,0,3758096396,0,14,0,0,0,24,
+2147483672,0,1610612751,1610612750,2147483653,0,5,536870917,0,15,0,15,0,2684354565,2147483653,0,5,1610612750,3758096399,0,24,
+2147483672,0,0,0,0,0,0,3758096396,0,14,0,14,0,14,0,0,0,0,0,0,24,
+2147483672,0,11,12,12,13,0,10,0,10,0,10,0,10,0,11,12,12,13,0,24,
+2147483672,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,24,
+2147483667,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,19,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
-  </layer>
+ </layer>
+ <layer id="2" name="Vrstva2" width="21" height="20">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,0,
+0,25,0,25,0,0,0,25,0,25,0,25,0,25,0,0,0,25,0,25,0,
+0,25,0,25,25,25,25,25,0,25,0,25,0,25,25,25,25,25,0,25,0,
+0,25,0,0,0,25,0,0,0,25,25,25,0,0,0,25,0,0,0,25,0,
+0,25,25,25,25,25,25,25,25,25,0,25,25,25,25,25,25,25,25,25,0,
+0,25,0,0,0,25,0,25,0,0,0,0,0,25,0,25,0,0,0,25,0,
+0,25,25,25,0,25,0,25,0,0,0,0,0,25,0,25,0,25,25,25,0,
+0,25,0,25,0,25,25,25,0,0,0,0,0,25,25,25,0,25,0,25,0,
+0,25,0,25,25,25,0,25,0,0,0,0,0,25,0,25,25,25,0,25,0,
+0,25,0,25,0,25,0,25,0,0,0,0,0,25,0,25,0,25,0,25,0,
+0,25,25,25,0,25,0,25,25,25,25,25,25,25,0,25,0,25,25,25,0,
+0,25,0,0,0,25,0,0,25,0,25,0,25,0,0,25,0,0,0,25,0,
+0,25,25,25,25,25,25,0,25,0,25,0,25,0,25,25,25,25,25,25,0,
+0,25,0,0,0,0,25,0,25,0,25,0,25,0,25,0,0,0,0,25,0,
+0,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
 </map>

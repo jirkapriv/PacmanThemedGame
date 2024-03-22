@@ -2,28 +2,27 @@ import pygame
 import sys
 import pytmx
 
-"""from pathfinding.core.grid import Grid
-from pathfinding.finder.a_star import AStarFinder"""
+import random
 
 pygame.init()
 
-screen_size = [755, 800]            #zkusim jsem random number (odhad)
+screen_size = [840, 840]            #zkusim jsem random number (odhad)
 screen = pygame.display.set_mode((screen_size[0], screen_size[1]))
 clock = pygame.time.Clock()
 font = pygame.font.Font(None, 36)   #velikost pisma
 game_name = "PacMan"                #nazev hry
+"""left = False
+right = False
+down = False
+up = False
+run = True"""
 actionX = None
 actionY = None
 mainAction = None
 
 positionX = 0
 positionY = 0
-x = 0
 
-
-
-pohybDelta1 = 0
-pohybDelta2 = 0
 
 tmx_map = pytmx.load_pygame("level1Map.tmx")
 
@@ -31,86 +30,59 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 SPEED = 4
 
-SCALE = 2.5                   #aby nemel misto
+SCALE = 2.5                         #aby nemel misto
 MSCALE = 5
 #hrac
 player = pygame.image.load("pacman2.png").convert()
 player.set_colorkey((255,255,255))
 player = pygame.transform.scale(player, (player.get_width() * SCALE, player.get_height() * SCALE))
-player_rect = player.get_rect(topleft=(screen.get_width() / 2 -10, screen.get_height() / 2))
+player_rect = player.get_rect(topleft=(screen.get_width() / 2 - 220, screen.get_height() / 2 ))
 playerFliped = player
 playerRight = player
 playerFliped = pygame.transform.flip(playerFliped, True, False)
 playerDown = pygame.transform.rotate(player,270)
 playerUp = pygame.transform.rotate(player,90)
+pointsCount = 0
 
 #nepratele
-enemy1 = pygame.image.load("pinky.png").convert()
-enemy1.set_colorkey((255,255,255))
-enemy1 = pygame.transform.scale(enemy1, (enemy1.get_width() * SCALE, enemy1.get_height() * SCALE))
-enemy1_rect = enemy1.get_rect(topleft=(screen.get_width() / 2, screen.get_width() / 2))
-enemy1_actionX = None        #pro osu x
-enemy1_actionY = None        #pro osu y
+enemies = [pygame.image.load("Pinky.png").convert(), pygame.image.load("Blinky.png").convert(), pygame.image.load("Clyde.png").convert(), pygame.image.load("Inky.png").convert()]
+enemies_rect = []
+"""enemy1 = pygame.image.load("Pinky.png").convert()
+enemy2 = pygame.image.load("Blinky.png").convert()
+enemy3 = pygame.image.load("Clyde.png").convert()
+enemy4 = pygame.image.load("Inky.png").convert()"""
+for a in range(len(enemies)):
+    enemies[a].set_colorkey((255,255,255))
+    enemies[a] = pygame.transform.scale(enemies[a], (enemies[a].get_width() * SCALE, enemies[a].get_height() * SCALE))
+    enemies_rect.append(enemies[a].get_rect(topleft=(440, 200)))
 
-enemy1_positionX = 0
-enemy1_positionY = 0
+#enemy1_rect = enemy1.get_rect(topleft=(screen.get_width() / 2, screen.get_width() / 2))            #spawn do klece
+#enemy1_rect = enemy1.get_rect(topleft=(440, 200))                                                  #spawn mimo klec
 
-enemy1_check_plan = None
-enemy1_movingX = True
-enemy1_movingY = True
+enemies_actionX = ["left", "right", "left", "right"]        #pro osu x
+enemies_actionY = ["down", "up", "down", "up"]        #pro osu y
+enemy_random_moveX = ["left", "right"]
+enemy_random_moveY = ["up", "down"]
+enemies_osaX = []
+enemies_osaY = []
+for a in range(len(enemies_rect)):
+    enemies_osaX.append(enemies_rect[a].x)
+    enemies_osaY.append(enemies_rect[a].y)
+enemies_close = [False, False, False, False]
 
+enemies_rangeOfSeeing = 4
 
-"""player_grid_x = player_rect.x // 40
-player_grid_y = player_rect.y // 40
-enemy1_grid_x = enemy1_rect.x // 40
-enemy1_grid_y = enemy1_rect.y // 40
+gameOver = False
 
-#mapa hry
-game_map = [
-      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
-      [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1],
-      [1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,1,1],
-      [1,0,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1],
-      [1,0,0,0,0,1,0,0,1,1,1,0,0,1,0,0,0,0,1,1],
-      [1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1,1],
-      [1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1],
-      [0,0,0,0,0,1,0,0,1,0,1,0,0,1,0,0,0,0,0,1],
-      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-      [0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
-      [1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1],
-      [1,1,1,1,0,1,0,1,0,1,0,1,0,1,0,1,1,1,1,1],
-      [1,0,0,0,0,1,0,1,0,1,0,1,0,1,0,0,0,0,0,1],
-      [1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,0,1],
-      [1,0,1,0,0,0,0,1,0,1,0,1,0,0,0,0,0,1,0,1],
-      [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-]
-# vytvoreni gridu
-grid = Grid(matrix = game_map)
-
-# vytvoreni startu a konce
-start = grid.node(enemy1_grid_x, enemy1_grid_y)
-end = grid.node(player_grid_x, player_grid_y)
-
-# vytvoreni hledaciho pohybu
-finder = AStarFinder()
-
-# pouziti hledani na cestu
-path,runs = finder.find_path(start,end,grid)
-
-#print(path)
-#idk 
-path_with_ones = [[1 if cell == 0 else cell for cell in row] for row in path]
-
-print(path_with_ones)"""
+pointList = []
 
 
 pygame.display.set_caption(game_name)
-
+for layer in tmx_map.visible_layers:
+    if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "Vrstva2":
+        for x, y, image in layer.tiles():
+            pointList.append([x * 8 * MSCALE + (8 * MSCALE)/2 , y * 8 * MSCALE + (8 * MSCALE)/2])
+        
 while True:
     screen.fill(BLACK)
     pressed = pygame.key.get_pressed()
@@ -130,212 +102,50 @@ while True:
                 #player = playerDown
             if event.key == pygame.K_w:
                 actionY = "up"
-                #player = playerUp
-    player_grid_x = player_rect.x // 40
-    player_grid_y = player_rect.y // 40
-    enemy1_grid_x = enemy1_rect.x // 40
-    enemy1_grid_y = enemy1_rect.y // 40"""
-
-    #print(player_grid_x, player_grid_y, enemy1_grid_x, enemy1_grid_y)
-
-        #///////////////pohyb///////////////
-    if pressed[pygame.K_w] or pressed[pygame.K_UP]:         #pokud jde nahoru
-        if(actionY != "up"):
-            positionX = player_rect.x
-        actionY = "up"
-        mainAction = actionY
-    if pressed[pygame.K_s] or pressed[pygame.K_DOWN]:			#pokud jde dolu
-        if(actionY != "down"):
-            positionX = player_rect.x
-        actionY = "down"
-        mainAction = actionY
-	
-    if pressed[pygame.K_a] or pressed[pygame.K_LEFT]:			#pokud jde do leva
-        if(actionX != "left"):
-            positionY = player_rect.y
-        actionX = "left"
-        mainAction = actionX
-    if pressed[pygame.K_d] or pressed[pygame.K_RIGHT]:			#pokud jde do prava
-        if(actionX != "right"):
-            positionY = player_rect.y
-        actionX = "right"
-        mainAction = actionX
-
-    # Zacne to zjistovat pozice po 4s
-    # Aktualizace pozice 1 každé dvě sekundy
-    """if pygame.time.get_ticks() % 1000 == 0:
-        pohybDelta1 = [enemy1_rect.x, enemy1_rect.y]
-    # Aktualizace pozice 2 každé dvě sekundy
-    if pygame.time.get_ticks() % 2000 == 0:
-        pohybDelta2 = [enemy1_rect.x, enemy1_rect.y]"""
-
-    #print(pohybDelta1, pohybDelta2, enemy1_rect)
-
-    """if (pohybDelta1 == pohybDelta2) or (enemy1_actionX == None or enemy1_actionY == None):
-        if (enemy1_rect.right != player_rect.left and enemy1_rect.top != player_rect.bottom and enemy1_rect.bottom != player_rect.top and enemy1_rect.left != player_rect.right):
-            check_pos = [enemy1_rect.x, enemy1_rect.y]
-            if(check_pos == pohybDelta1 or check_pos == pohybDelta2):
-                print(695584462436)
-                if player_rect.y > enemy1_rect.y:
-                    enemy1_plan_moveY = "down"
-                    print("down")
-                elif player_rect.y < enemy1_rect.y:
-                    enemy1_plan_moveY = "up"
-                    print("up")
-                if player_rect.x > enemy1_rect.x:
-                    enemy1_plan_moveX = "right"
-                    print("right")
-                elif player_rect.x < enemy1_rect.x:
-                    enemy1_plan_moveX = "left"
-                    print("left")"""
-        
+                #player = playerUp"""
 
 
-        #urceni smeru #5                        dfsghdfghdfgbrddhbgdgfhbdfghbdfghbfgdhbdfghbdfghbdfghb      (malem jsem rozbil klavesu kvuli teto podmince)
+    text = font.render(f"Score: {pointsCount}", True, WHITE)
 
-    # problem s velikosti postavicky nejak se proste hejbne a bum spusti se podminka, ale neni tam ulicka treba idk
-    #   pokud se zmeni pozice           pokud jsou dva povely                       pokud jeho plan je jit nahoru ci dolu
-    if positionY != player_rect.y:
-        if mainAction == "up":
-            player = playerUp
-        elif mainAction == "down":
-            player = playerDown
-        if ((actionX != None and actionY != None) and mainAction == "up" or mainAction == "down"):
-            if (mainAction == "up"):
-                player = playerUp
-            elif(mainAction == "Down"):
-                player = playerDown
-            #print("Y",positionY, player_rect.y, "True", "1")
-            #print("MainAction", mainAction)
-            actionX = None
-    #       pokud se zmeni pozice               pokud jsou dva povely                 pokud jeho plan je jit do leva ci do prava
-    if positionX != player_rect.x:
-        if mainAction == "left":
-            player = playerFliped
-        elif mainAction == "right":
-            player = playerRight
-        if ((actionX != None and actionY != None) and mainAction == "left" or mainAction == "right"):
-            if (mainAction == "left"):
-                player = playerFliped
-            elif(mainAction == "right"):
-                player = playerRight
-            #print("X", positionX, player_rect.x, "True", "2")
-            #print("MainAction", mainAction)
-            actionY = None
-    if mainAction == "left" or mainAction == "right":
-        positionY = player_rect.y
-    elif mainAction == "down" or mainAction == "up":
-        positionX = player_rect.x
-    #///////////////pohyb///////////////
-
-        #teleport na druhou stranu
+    #teleport na druhou stranu
     if (player_rect.x < 0-player.get_width()//2) and actionX == "left":
         player_rect.x = screen.get_width()
-        #print(player_rect.x,player_rect.y )
-        #player_rect.y = 400
-    elif player_rect.x > (screen.get_width()+player.get_width()//2+player.get_width()//2) :
+        #player_rect.y = positionY
+    elif player_rect.x > ((screen.get_width()-player.get_width())+player.get_width()//2) and actionX == "right":
         player_rect.x = 0
-        #player_rect.y = 400
-        #print(player_rect.x,player_rect.y )
+        #player_rect.y = positionY
 
+    #teleport na druhou stranu pro enemy
+    for a in range(len(enemies)):
+        if (enemies_rect[a].x < 0-enemies[a].get_width()//2) and enemies_actionX[a] == "left":
+            enemies_rect[a].x = screen.get_width()
+        elif enemies_rect[a].x > ((screen.get_width()-enemies[a].get_width())+enemies[a].get_width()//2) and enemies_actionX[a] == "right":
+            enemies_rect[a].x = 0
 
-    #prikaz kam ma jit nepritel                 #potrebovalo by to lepsi logiku
-    #pro osu x
-    if (enemy1_rect.x > player_rect.x and enemy1_movingX):
-        enemy1_actionX = "left"
-        enemy1_positionY = enemy1_rect.y
-    elif (enemy1_rect.x < player_rect.x and enemy1_movingX):
-        enemy1_actionX = "right"
-        enemy1_positionY = enemy1_rect.y
-    else:
-        enemy1_actionX = None
-    #pro osu y
-    if (enemy1_rect.y > player_rect.y and enemy1_movingY):
-        enemy1_actionY = "up"
-        enemy1_positionX = enemy1_rect.x
-    elif (enemy1_rect.y < player_rect.y and enemy1_movingY):
-        enemy1_actionY = "down"
-        enemy1_positionX = enemy1_rect.x
-    else:
-        enemy1_actionY = None
+        #prikaz kam ma jit nepritel                 #potrebovalo by to lepsi logiku
+        if (enemies_rect[a].x > player_rect.x and enemies_close[a]):
+            enemies_actionX[a] = "left"
+        elif (enemies_rect[a].x < player_rect.x and enemies_close[a]):
+            enemies_actionX[a] = "right"
+        if (enemies_rect[a].y > player_rect.y and enemies_close[a]):
+            enemies_actionY[a] = "up"
+        elif (enemies_rect[a].y < player_rect.y and enemies_close[a]):
+            enemies_actionY[a] = "down"
 
-    print(enemy1_rect.x, enemy1_rect.y, enemy1_positionX, enemy1_positionY)
-
-    """if enemy1_actionX == None:
-         enemy1_check_plan = "down"
-         if enemy1_check_plan == "down" and enemy1_move_done == True:
-             enemy1_move_done = False
-             enemy1_plan_move = "down"
-    elif enemy1_actionY == None:
-         enemy1_check_plan = "left"
-         if enemy1_check_plan == "left" and enemy1_move_done == True:
-             enemy1_move_done = False
-             enemy1_plan_move = "left"
-    else:
-         enemy1_check_plan = None"""
-    
-    """if enemy1_actionX == None:
-         if enemy1_actionY == "down" or enemy1_actionY == "up" and enemy1_rect.x == enemy1_positionX:
-             enemy1_actionX = "left"
-             enemy1_positionY = enemy1_rect.y
-             enemy1_movingX = False
-    elif enemy1_actionY == None:
-        if enemy1_actionY == "left" or enemy1_actionY == "right" and enemy1_rect.y == enemy1_positionY:
-             enemy1_actionX = "down"
-             enemy1_positionX = enemy1_rect.x
-             enemy1_movingY = False"""
-    
-
-    #       otrocky         fghdfghdhfg ghdhdgfdhsgfsdhg    hfgdsdhsdgfdsgfsdg
-    if enemy1_rect.x >= 280 and enemy1_rect.x <= 440 and enemy1_rect.y >= 480 and enemy1_rect.y <= 680 and player_rect.y <= 480:
-        enemy1_movingX = False
-        enemy1_movingY = False
-        if enemy1_rect.x > (440+280//2) and enemy1_rect.y > (480+680//2):
-            enemy1_actionX = "right"
-        elif enemy1_rect.x < (440+280//2) and enemy1_rect.y > (480+680//2):
-            enemy1_actionX = "left"
+        #nepritel je blizko "I can smell him!!!!"
+        if player_rect.y <= enemies_rect[a].y+enemies[a].get_height()*enemies_rangeOfSeeing and player_rect.y+player.get_height()*enemies_rangeOfSeeing >= enemies_rect[a].y and player_rect.x <= enemies_rect[a].x+enemies[a].get_width()*enemies_rangeOfSeeing and player_rect.x+player.get_width()*enemies_rangeOfSeeing >= enemies_rect[a].x:
+            print("I see him!!!")
+            enemies_close[a] = True
         else:
-            enemy1_actionX = None
-        if enemy1_rect.y != 680:
-            enemy1_actionY = "down"
-        else:
-            enemy1_actionY = None
-            if player_rect.x > enemy1_rect.x:
-                enemy1_actionX = "right"
-            elif player_rect.x < enemy1_rect.x:
-                enemy1_actionX = "left"
-        if enemy1_rect.x >= 200 and enemy1_rect.x <= 280 and enemy1_rect.y == 600:
-            enemy1_rect.x = 200
-            enemy1_rect.y = 595
-            enemy1_movingX = True
-            enemy1_movingY = True
-        elif enemy1_rect.x >= 440 and enemy1_rect.x <= 520 and enemy1_rect.y == 600:
-            enemy1_rect.x = 520
-            enemy1_rect.y = 595
-            enemy1_movingX = True
-            enemy1_movingY = True
+            print("I can't see him :,(")
+            enemies_close[a] = False
 
+        #pokud se player dotkne nepritele tak skonci hra
+        if player_rect.y <= enemies_rect[a].y+enemies[a].get_height()//2 and player_rect.y+player.get_height()//2 >= enemies_rect[a].y and player_rect.x <= enemies_rect[a].x+enemies[a].get_width()//2 and player_rect.x+player.get_width()//2 >= enemies_rect[a].x:
+            gameOver = True
 
-    """elif player_rect.y > 480:
-        enemy1_movingX = True
-        enemy1_movingY = True
-    if player_rect.y < 480 and enemy1_rect.x > (440+280//2) and enemy:
-        enemy1_movingX = False
-        if enemy1_rect.y == 680:
-            enemy"""
-
-    """else:
-        enemy1_movingX = True
-    if enemy1_rect.y > 600:
-        enemy1_movingY = True"""
-
-
-    #print(enemy1_check_plan, enemy1_actionX, enemy1_actionY)
-    
-
-
-    for layer in tmx_map.visible_layers:
-        if isinstance(layer, pytmx.TiledTileLayer):
+    for layer in tmx_map.visible_layers :
+        if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "Vrstva1":
             for x, y, image in layer.tiles():
                 image.convert()
                 image.set_colorkey(WHITE)
@@ -343,22 +153,30 @@ while True:
                     image, (8 * MSCALE, 8 * MSCALE))
                 screen.blit(scaled_image, (x * 8 *
                             MSCALE, y * 8 * MSCALE))
-
+    
+    for x, y in enumerate(pointList):
+        pygame.draw.circle(screen, (255,255,255), (y[0], y[1]), 3)
+        if player_rect.colliderect((y[0], y[1], 2, 2)):
+            pointList.pop(x)
+            pointsCount+=1
+        
+        
 
     if actionX == "left":
         player_rect.x -= SPEED
     if actionX == "right":
         player_rect.x += SPEED
 
-    if enemy1_actionX == "left":
-        enemy1_rect.x -= SPEED
-    if enemy1_actionX == "right":
-        enemy1_rect.x += SPEED
+    for a in range(len(enemies)):
+        if enemies_actionX[a] == "left":
+            enemies_rect[a].x -= SPEED
+        if enemies_actionX[a] == "right":
+            enemies_rect[a].x += SPEED
 
         
-    for layerX in tmx_map.visible_layers:
-        if isinstance(layerX, pytmx.TiledTileLayer) and layerX.name == "Vrstva1":
-            for x, y, tile in layerX.tiles():
+    for layer in tmx_map.visible_layers:
+        if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "Vrstva1":
+            for x, y, tile in layer.tiles():
                 platformX = pygame.Rect(x * 8 * MSCALE, y * 8 * MSCALE,
                                         8 * MSCALE, 8 * MSCALE)
                 if player_rect.colliderect(platformX):
@@ -368,22 +186,47 @@ while True:
                     elif actionX == "left":
                         player_rect.left = platformX.right
 
-                if enemy1_rect.colliderect(platformX):
-                    if enemy1_actionX == "right":
-                        enemy1_rect.right = platformX.left
-                    
-                    elif enemy1_actionX == "left":
-                        enemy1_rect.left = platformX.right
+                for a in range(len(enemies)):
+                    if enemies_rect[a].colliderect(platformX):
+                        randomNumberX = random.randrange(0,len(enemy_random_moveX))
+                        #randomNumberY = random.randrange(0,len(enemy1_random_moveY))
+                        #print(randomNumberX)
+                        if enemies_actionX[a] == "right":
+                            enemies_rect[a].right = platformX.left
+
+                            if enemies_close[a] != True:    
+                                if enemies_osaY[a] != enemies_rect[a].y:
+                                    enemies_osaY[a] = enemies_rect[a].y
+                                    #enemy1_actionX = "left"
+                                    enemies_actionX[a] = enemy_random_moveX[randomNumberX]
+                                    #enemy1_actionY = enemy1_random_moveY[randomNumberY]
+                                else:
+                                    print(f'Detekce X: {enemies_actionX[a]}')
+                                    enemies_actionX[a] = enemy_random_moveX[randomNumberX]
+
+                        elif enemies_actionX[a] == "left":
+                            enemies_rect[a].left = platformX.right
+
+                            if enemies_close[a] != True:
+                                if enemies_osaY[a] != enemies_rect[a].y:
+                                    enemies_osaY[a] = enemies_rect[a].y
+                                    #enemy1_actionX = "right"
+                                    enemies_actionX[a] = enemy_random_moveX[randomNumberX]
+                                    #enemy1_actionY = enemy1_random_moveY[randomNumberY]
+                                else:
+                                    print(f'Detekce X: {enemies_actionX[a]}')
+                                    enemies_actionX[a] = enemy_random_moveX[randomNumberX]
                         
     if actionY == "down":
         player_rect.y += SPEED
     if actionY == "up":
         player_rect.y -= SPEED
 
-    if enemy1_actionY == "down":
-        enemy1_rect.y += SPEED
-    if enemy1_actionY == "up":
-        enemy1_rect.y -= SPEED
+    for a in range(len(enemies)):
+        if enemies_actionY[a] == "down":
+            enemies_rect[a].y += SPEED
+        if enemies_actionY[a] == "up":
+            enemies_rect[a].y -= SPEED
         
 
     for layerY in tmx_map.visible_layers:
@@ -396,17 +239,107 @@ while True:
                         player_rect.bottom = platformY.top
                     elif actionY == "up":
                         player_rect.top = platformY.bottom
-                
-                if enemy1_rect.colliderect(platformY):
-                    if enemy1_actionY == "down":
-                        enemy1_rect.bottom = platformY.top
-                    
-                    elif enemy1_actionY == "up":
-                        enemy1_rect.top = platformY.bottom
+                for a in range(len(enemies)):
+                    if enemies_rect[a].colliderect(platformY):
+                        #randomNumberX = random.randrange(0,len(enemy1_random_moveX))
+                        randomNumberY = random.randrange(0,len(enemy_random_moveY))
+                        #print(randomNumberY)
+                        if enemies_actionY[a] == "down":
+                            enemies_rect[a].bottom = platformY.top
 
+                            if enemies_close[a] != True:
+                                if enemies_osaX[a] != enemies_rect[a].x:
+                                    enemies_osaX[a] = enemies_rect[a].x
+                                    #enemy1_actionY = "up"
+                                    #enemy1_actionX = enemy1_random_moveX[randomNumberX]
+                                    enemies_actionY[a] = enemy_random_moveY[randomNumberY]
+                                else:
+                                    print(f'Detekce Y: {enemies_osaY[a]}')
+                                    enemies_actionY[a] = enemy_random_moveY[randomNumberY]
+
+                        elif enemies_actionY[a] == "up":
+                            enemies_rect[a].top = platformY.bottom
+
+                            if enemies_close[a] != True:
+                                if enemies_osaX[a] != enemies_rect[a].x:
+                                    enemies_osaX[a] = enemies_rect[a].x
+                                    #enemy1_actionY = "down"
+                                    #enemy1_actionX = enemy1_random_moveX[randomNumberX]
+                                    enemies_actionY[a] = enemy_random_moveY[randomNumberY]
+                                else:
+                                    print(f'Detekce Y: {enemies_osaY[a]}')
+                                    enemies_actionY[a] = enemy_random_moveY[randomNumberY]
+
+
+    #///////////////pohyb///////////////
+    if pressed[pygame.K_w] or pressed[pygame.K_UP]:         #pokud jde nahoru
+        if(actionY != "up"):
+            positionX = player_rect.x
+        actionY = "up"
+        mainAction = actionY
+    elif pressed[pygame.K_s] or pressed[pygame.K_DOWN]:			#pokud jde dolu
+        if(actionY != "down"):
+            positionX = player_rect.x
+        actionY = "down"
+        mainAction = actionY
+	
+    elif pressed[pygame.K_a] or pressed[pygame.K_LEFT]:			#pokud jde do leva
+        if(actionX != "left"):
+            positionY = player_rect.y
+        actionX = "left"
+        mainAction = actionX
+    elif pressed[pygame.K_d] or pressed[pygame.K_RIGHT]:			#pokud jde do prava
+        if(actionX != "right"):
+            positionY = player_rect.y
+        actionX = "right"
+        mainAction = actionX
+    
+    #urceni smeru #5                        dfsghdfghdfgbrddhbgdgfhbdfghbdfghbfgdhbdfghbdfghbdfghb      (malem jsem rozbil klavesu kvuli teto podmince)
+
+    #problem s velikosti postavicky nejak se proste hejbne a bum spusti se podminka, ale neni tam ulicka treba idk
+    #   pokud se zmeni pozice           pokud jsou dva povely                       pokud jeho plan je jit nahoru ci dolu
+    if ((positionY > player_rect.y and positionY < player_rect.y) or positionY != player_rect.y):
+        if mainAction == "up":
+            player = playerUp
+        elif mainAction == "down":
+            player = playerDown
+        if ((actionX != None and actionY != None) and mainAction == "up" or mainAction == "down"):
+            #print("Y",positionY, player_rect.y, "True", "1")
+            #print("MainAction", mainAction)
+            actionX = None
+            if (actionY == "up"):
+                player = playerUp
+            elif(actionY == "Down"):
+                player = playerDown
+    #       pokud se zmeni pozice               pokud jsou dva povely                 pokud jeho plan je jit do leva ci do prava
+    elif (positionX > player_rect.x or positionX < player_rect.x) or positionX != player_rect.x:
+        if mainAction == "left":
+            player = playerFliped
+        elif mainAction == "right":
+            player = playerRight
+        if ((actionX != None and actionY != None) and mainAction == "left" or mainAction == "right"):
+            #print("X", positionX, player_rect.x, "True", "2")
+            #print("MainAction", mainAction)
+            actionY = None
+            if (actionX == "left"):
+                player = playerFliped
+            elif(actionX == "right"):
+                player = playerRight
+    if mainAction == "left" or mainAction == "right":
+        positionY = player_rect.y
+    elif mainAction == "down" or mainAction == "up":
+        positionX = player_rect.x
+    #///////////////pohyb///////////////
 
     screen.blit(player, player_rect)
-    screen.blit(enemy1, enemy1_rect)
+    for a in range(len(enemies)):
+        screen.blit(enemies[a], enemies_rect[a])
+    #screen.blit(enemy1, enemy1_rect)
+    screen.blit(text, (10, 10))
+
+    if gameOver:                     #zatim se na hre pracuje takze to bude v komentu
+        break
+
     
     pygame.display.flip()
     clock.tick(60)
