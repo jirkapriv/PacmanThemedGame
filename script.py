@@ -8,8 +8,10 @@ pygame.init()
 screen_size = [840, 840]            #zkusim jsem random number (odhad)
 screen = pygame.display.set_mode((screen_size[0], screen_size[1]))
 clock = pygame.time.Clock()
+
 font = pygame.font.Font(None, 36)   #velikost pisma
 game_name = "PacMan"                #nazev hry
+pygame.display.set_caption(game_name)
 """left = False
 right = False
 down = False
@@ -27,8 +29,8 @@ tmx_map = pytmx.load_pygame("level1Map.tmx")
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 SPEED = 4
-enemySPEED = 3
-
+enemySPEED = 1
+havePowerUp = False
 SCALE = 2.5                         #aby nemel misto
 MSCALE = 5
 #hrac
@@ -72,17 +74,29 @@ enemies_close = [False, False, False, False]
 enemies_rangeOfSeeing = 4
 
 gameOver = False
-
+timer = 0
 pointList = []
+powerUpsList = []
 
-
-pygame.display.set_caption(game_name)
 for layer in tmx_map.visible_layers:
-    if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "Vrstva2":
+    if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "Jidlo":
         for x, y, image in layer.tiles():
             pointList.append([x * 8 * MSCALE + (8 * MSCALE)/2 , y * 8 * MSCALE + (8 * MSCALE)/2])
-        
+     
+for layer in tmx_map.visible_layers:
+    if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "powerUp":
+        for x, y, image in layer.tiles():
+            powerUpsList.append([x * 8 * MSCALE + (8 * MSCALE)/2 , y * 8 * MSCALE + (8 * MSCALE)/2])  
+      
 while True:
+    
+    timer += 0.5
+    
+    if timer >= 200:
+        havePowerUp = False
+        timer = 0
+        
+    print(havePowerUp)
     screen.fill(BLACK)
     pressed = pygame.key.get_pressed()
     for event in pygame.event.get():
@@ -144,22 +158,27 @@ while True:
             gameOver = True
 
     for layer in tmx_map.visible_layers :
-        if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "Vrstva1":
+        if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "Colides":
             for x, y, image in layer.tiles():
                 image.convert()
                 image.set_colorkey(WHITE)
                 scaled_image = pygame.transform.scale(
                     image, (8 * MSCALE, 8 * MSCALE))
                 screen.blit(scaled_image, (x * 8 *
-                            MSCALE, y * 8 * MSCALE))
+                            MSCALE, y * 8 * MSCALE))            
     
     for x, y in enumerate(pointList):
         pygame.draw.circle(screen, (255,255,255), (y[0], y[1]), 3)
         if player_rect.colliderect((y[0], y[1], 2, 2)):
             pointList.pop(x)
-            pointsCount+=1
-        
-        
+            pointsCount+=10
+            
+    for x, y in enumerate(powerUpsList):
+        pygame.draw.circle(screen, (255,255,255), (y[0], y[1]), 10)
+        if player_rect.colliderect((y[0], y[1], 2, 2)):
+            powerUpsList.pop(x)
+            havePowerUp = True
+
 
     if actionX == "left":
         player_rect.x -= SPEED
@@ -172,9 +191,8 @@ while True:
         if enemies_actionX[a] == "right":
             enemies_rect[a].x += enemySPEED
 
-        
     for layer in tmx_map.visible_layers:
-        if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "Vrstva1":
+        if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "Colides":
             for x, y, tile in layer.tiles():
                 platformX = pygame.Rect(x * 8 * MSCALE, y * 8 * MSCALE,
                                         8 * MSCALE, 8 * MSCALE)
@@ -215,7 +233,6 @@ while True:
                                 else:
                                     #print(f'Detekce X: {enemies_actionX[a]}')
                                     enemies_actionX[a] = enemy_random_moveX[randomNumberX]
-                        
     if actionY == "down":
         player_rect.y += SPEED
     if actionY == "up":
@@ -229,7 +246,7 @@ while True:
         
 
     for layerY in tmx_map.visible_layers:
-        if isinstance(layerY, pytmx.TiledTileLayer) and layerY.name == "Vrstva1":
+        if isinstance(layerY, pytmx.TiledTileLayer) and layerY.name == "Colides":
             for n, m, tile in layerY.tiles():
                 platformY = pygame.Rect(n * 8 * MSCALE, m * 8 * MSCALE,
                                         8 * MSCALE, 8 * MSCALE)

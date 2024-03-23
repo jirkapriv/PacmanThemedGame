@@ -92,11 +92,11 @@
             "scaleInDock": 1
         },
         "level1Map.tmx": {
-            "scale": 8,
-            "selectedLayer": 1,
+            "scale": 5.5,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 103.625,
-                "y": 65.125
+                "x": 87.81818181818183,
+                "y": 86.90909090909092
             }
         }
     },
