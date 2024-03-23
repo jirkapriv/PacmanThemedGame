@@ -20,19 +20,23 @@ run = True"""
 actionX = None
 actionY = None
 mainAction = None
-
 positionX = 0
 positionY = 0
 
 tmx_map = pytmx.load_pygame("level1Map.tmx")
+eatSound = pygame.mixer.Sound("eatSoundPacMan.mp3")
+eatSound.set_volume(0.3)
+pygame.mixer.music.load("introPacMan.mp3")
+pygame.mixer.music.set_volume(0.2)
+pygame.mixer.music.play(1)
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 SPEED = 4
-enemySPEED = 1
-havePowerUp = False
 SCALE = 2.5                         #aby nemel misto
 MSCALE = 5
+enemySPEED = 3.5
+havePowerUp = False
 #hrac
 player = pygame.image.load("pacman2.png").convert()
 player.set_colorkey((255,255,255))
@@ -172,11 +176,14 @@ while True:
         if player_rect.colliderect((y[0], y[1], 2, 2)):
             pointList.pop(x)
             pointsCount+=10
+            pygame.mixer.Sound.play(eatSound)
+            
             
     for x, y in enumerate(powerUpsList):
         pygame.draw.circle(screen, (255,255,255), (y[0], y[1]), 10)
         if player_rect.colliderect((y[0], y[1], 2, 2)):
             powerUpsList.pop(x)
+            pygame.mixer.Sound.play(eatSound)
             havePowerUp = True
 
 
