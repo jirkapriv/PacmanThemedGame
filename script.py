@@ -12,11 +12,6 @@ clock = pygame.time.Clock()
 font = pygame.font.Font(None, 36)   #velikost pisma
 game_name = "PacMan"                #nazev hry
 pygame.display.set_caption(game_name)
-"""left = False
-right = False
-down = False
-up = Falsed
-run = True"""
 actionX = None
 actionY = None
 mainAction = None
@@ -35,7 +30,7 @@ BLACK = (0, 0, 0)
 SPEED = 4
 SCALE = 2.5                         #aby nemel misto
 MSCALE = 5
-enemySPEED = 3.5
+enemySPEED = 1
 havePowerUp = False
 #hrac
 player = pygame.image.load("pacman2.png").convert()
@@ -52,10 +47,6 @@ pointsCount = 0
 #nepratele
 enemies = [pygame.image.load("Pinky.png").convert(), pygame.image.load("Blinky.png").convert(), pygame.image.load("Clyde.png").convert(), pygame.image.load("Inky.png").convert()]
 enemies_rect = []
-"""enemy1 = pygame.image.load("Pinky.png").convert()
-enemy2 = pygame.image.load("Blinky.png").convert()
-enemy3 = pygame.image.load("Clyde.png").convert()
-enemy4 = pygame.image.load("Inky.png").convert()"""
 for a in range(len(enemies)):
     enemies[a].set_colorkey((255,255,255))
     enemies[a] = pygame.transform.scale(enemies[a], (enemies[a].get_width() * SCALE, enemies[a].get_height() * SCALE))
@@ -78,7 +69,7 @@ enemies_close = [False, False, False, False]
 enemies_rangeOfSeeing = 4
 
 gameOver = False
-timer = 0
+timer = 100
 pointList = []
 powerUpsList = []
 
@@ -93,36 +84,37 @@ for layer in tmx_map.visible_layers:
             powerUpsList.append([x * 8 * MSCALE + (8 * MSCALE)/2 , y * 8 * MSCALE + (8 * MSCALE)/2])  
       
 while True:
+    if not havePowerUp:
+        textik = str(f"invisibility: {0}")
+    else:
+        textik = f"invisibility: {round(max(timer,0))}"
     
-    timer += 0.5
-    
-    if timer >= 200:
+    if timer <= 0 and havePowerUp == True:
         havePowerUp = False
-        timer = 0
-        
-    print(havePowerUp)
+        timer = 100
+    else:
+        timer -= 0.25
     screen.fill(BLACK)
     pressed = pygame.key.get_pressed()
     for event in pygame.event.get():
         if event.type == pygame.QUIT or pressed[pygame.K_ESCAPE]:
             pygame.quit()
             sys.exit()
-        """if event.type == pygame.KEYDOWN:                     #funkce na pohyb je dole
-            if event.key == pygame.K_a:
-                actionX = "left"
-                #player = playerFliped
-            if event.key == pygame.K_d:
-                actionX = "right"
-                #player = playerRight
-            if event.key == pygame.K_s:
-                actionY = "down"
-                #player = playerDown
-            if event.key == pygame.K_w:
-                actionY = "up"
-                #player = playerUp"""
+
+    if enemySPEED == 1:
+        levelDifficulty = "Easy"
+    if enemySPEED == 2:
+        levelDifficulty = "Normal"
+    if enemySPEED == 3:
+        levelDifficulty = "Hard"
+    if enemySPEED == 4:
+        levelDifficulty = "Impossible"
+
 
 
     text = font.render(f"Score: {pointsCount}", True, WHITE)
+    text2 = font.render(textik, True, WHITE)
+    text3 = font.render(levelDifficulty, True, WHITE)
 
     #teleport na druhou stranu
     if (player_rect.x < 0-player.get_width()//2) and actionX == "left":
@@ -149,17 +141,33 @@ while True:
         elif (enemies_rect[a].y < player_rect.y and enemies_close[a]):
             enemies_actionY[a] = "down"
 
-        #nepritel je blizko "I can smell him!!!!"
-        if player_rect.y <= enemies_rect[a].y+enemies[a].get_height()*enemies_rangeOfSeeing and player_rect.y+player.get_height()*enemies_rangeOfSeeing >= enemies_rect[a].y and player_rect.x <= enemies_rect[a].x+enemies[a].get_width()*enemies_rangeOfSeeing and player_rect.x+player.get_width()*enemies_rangeOfSeeing >= enemies_rect[a].x:
-            #print("I see him!!!")
-            enemies_close[a] = True
+        #Pokud hrac nesnedl powerup tak si ho nepratele mohou najit
+        if havePowerUp != True:
+            #nepritel je blizko "I can smell him!!!!"
+            if player_rect.y <= enemies_rect[a].y+enemies[a].get_height()*enemies_rangeOfSeeing and player_rect.y+player.get_height()*enemies_rangeOfSeeing >= enemies_rect[a].y and player_rect.x <= enemies_rect[a].x+enemies[a].get_width()*enemies_rangeOfSeeing and player_rect.x+player.get_width()*enemies_rangeOfSeeing >= enemies_rect[a].x:
+                #print("I see him!!!")
+                enemies_close[a] = True
+            else:
+                #print("I can't see him :,(")
+                enemies_close[a] = False
+            #pokud se player dotkne nepritele tak skonci hra
+            if player_rect.y <= enemies_rect[a].y+enemies[a].get_height()//2 and player_rect.y+player.get_height()//2 >= enemies_rect[a].y and player_rect.x <= enemies_rect[a].x+enemies[a].get_width()//2 and player_rect.x+player.get_width()//2 >= enemies_rect[a].x:
+                gameOver = True
         else:
-            #print("I can't see him :,(")
             enemies_close[a] = False
-
-        #pokud se player dotkne nepritele tak skonci hra
-        if player_rect.y <= enemies_rect[a].y+enemies[a].get_height()//2 and player_rect.y+player.get_height()//2 >= enemies_rect[a].y and player_rect.x <= enemies_rect[a].x+enemies[a].get_width()//2 and player_rect.x+player.get_width()//2 >= enemies_rect[a].x:
-            gameOver = True
+            
+    if havePowerUp:
+        player.set_alpha(50)
+        playerFliped.set_alpha(50)
+        playerRight.set_alpha(50)
+        playerUp.set_alpha(50)
+        playerDown.set_alpha(50)
+    else:
+        player.set_alpha(255)
+        playerFliped.set_alpha(255)
+        playerRight.set_alpha(255)
+        playerUp.set_alpha(255)
+        playerDown.set_alpha(255)
 
     for layer in tmx_map.visible_layers :
         if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "Colides":
@@ -178,6 +186,24 @@ while True:
             pointsCount+=10
             pygame.mixer.Sound.play(eatSound)
             
+    if pointList == []:
+        if enemySPEED < 4:
+            enemySPEED += 1
+        for layer in tmx_map.visible_layers:
+            if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "Jidlo":
+                for x, y, image in layer.tiles():
+                    pointList.append([x * 8 * MSCALE + (8 * MSCALE)/2 , y * 8 * MSCALE + (8 * MSCALE)/2])
+     
+        for layer in tmx_map.visible_layers:
+            if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "powerUp":
+                for x, y, image in layer.tiles():
+                    powerUpsList.append([x * 8 * MSCALE + (8 * MSCALE)/2 , y * 8 * MSCALE + (8 * MSCALE)/2])  
+        player_rect = player.get_rect(topleft=(screen.get_width() / 2 - 220, screen.get_height() / 2 ))
+        for a in range(len(enemies)):
+            enemies_rect[a].x = 440
+            enemies_rect[a].y = 200
+
+            
             
     for x, y in enumerate(powerUpsList):
         pygame.draw.circle(screen, (255,255,255), (y[0], y[1]), 10)
@@ -185,7 +211,8 @@ while True:
             powerUpsList.pop(x)
             pygame.mixer.Sound.play(eatSound)
             havePowerUp = True
-
+            timer = 100
+            
 
     if actionX == "left":
         player_rect.x -= SPEED
@@ -322,9 +349,9 @@ while True:
     #problem s velikosti postavicky nejak se proste hejbne a bum spusti se podminka, ale neni tam ulicka treba idk
     #   pokud se zmeni pozice           pokud jsou dva povely                       pokud jeho plan je jit nahoru ci dolu
     if ((positionY > player_rect.y and positionY < player_rect.y) or positionY != player_rect.y):
-        if mainAction == "up":
+        if actionY == "up":
             player = playerUp
-        elif mainAction == "down":
+        elif actionY == "down":
             player = playerDown
         if ((actionX != None and actionY != None) and mainAction == "up" or mainAction == "down"):
             #print("Y",positionY, player_rect.y, "True", "1")
@@ -336,9 +363,9 @@ while True:
                 player = playerDown
     #       pokud se zmeni pozice               pokud jsou dva povely                 pokud jeho plan je jit do leva ci do prava
     elif (positionX > player_rect.x or positionX < player_rect.x) or positionX != player_rect.x:
-        if mainAction == "left":
+        if actionX == "left":
             player = playerFliped
-        elif mainAction == "right":
+        elif actionX == "right":
             player = playerRight
         if ((actionX != None and actionY != None) and mainAction == "left" or mainAction == "right"):
             #print("X", positionX, player_rect.x, "True", "2")
@@ -359,9 +386,11 @@ while True:
         screen.blit(enemies[a], enemies_rect[a])
     #screen.blit(enemy1, enemy1_rect)
     screen.blit(text, (10, 10))
+    screen.blit(text2, (screen.get_width()- 200, 10))
+    screen.blit(text3, (screen.get_width()/2 - text3.get_width()/2, 10))
 
-    if gameOver:                     #zatim se na hre pracuje takze to bude v komentu
-        break
+    # if gameOver:                     #zatim se na hre pracuje takze to bude v komentu
+    #     break
 
     
     pygame.display.flip()
