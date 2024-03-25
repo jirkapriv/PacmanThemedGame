@@ -2,6 +2,8 @@ import pygame
 import sys
 import pytmx
 import random
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 
 pygame.init()
 
@@ -65,7 +67,6 @@ for a in range(len(enemies_rect)):
     enemies_osaX.append(enemies_rect[a].x)
     enemies_osaY.append(enemies_rect[a].y)
 enemies_close = [False, False, False, False]
-
 enemies_rangeOfSeeing = 4
 
 gameOver = False
@@ -77,12 +78,38 @@ for layer in tmx_map.visible_layers:
     if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "Jidlo":
         for x, y, image in layer.tiles():
             pointList.append([x * 8 * MSCALE + (8 * MSCALE)/2 , y * 8 * MSCALE + (8 * MSCALE)/2])
-     
+
 for layer in tmx_map.visible_layers:
     if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "powerUp":
         for x, y, image in layer.tiles():
             powerUpsList.append([x * 8 * MSCALE + (8 * MSCALE)/2 , y * 8 * MSCALE + (8 * MSCALE)/2])  
-      
+
+with open("name.txt", "r") as file:
+    first_line = file.readline().strip()
+    if not first_line:
+        name = input("Enter Your Name: ")
+        with open("name.txt", "w") as file_write:
+            file_write.write(name)
+    else:
+        name = first_line
+
+uri = "mongodb+srv://jiriprivratsky:8kp9pwcPtvazMCe3@cluster0.gvsfodh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+# Create a new client and connect to the server
+client = MongoClient(uri, server_api=ServerApi('1'))
+mydb = client["mydatabase"]
+mycol = mydb["players"]
+
+
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
+
+
+
+
 while True:
     if not havePowerUp:
         textik = str(f"invisibility: {0}")
@@ -194,6 +221,7 @@ while True:
                 for x, y, image in layer.tiles():
                     pointList.append([x * 8 * MSCALE + (8 * MSCALE)/2 , y * 8 * MSCALE + (8 * MSCALE)/2])
      
+     
         for layer in tmx_map.visible_layers:
             if isinstance(layer, pytmx.TiledTileLayer) and layer.name == "powerUp":
                 for x, y, image in layer.tiles():
@@ -201,9 +229,7 @@ while True:
         player_rect = player.get_rect(topleft=(screen.get_width() / 2 - 220, screen.get_height() / 2 ))
         for a in range(len(enemies)):
             enemies_rect[a].x = 440
-            enemies_rect[a].y = 200
-
-            
+            enemies_rect[a].y = 200    
             
     for x, y in enumerate(powerUpsList):
         pygame.draw.circle(screen, (255,255,255), (y[0], y[1]), 10)
@@ -212,6 +238,7 @@ while True:
             pygame.mixer.Sound.play(eatSound)
             havePowerUp = True
             timer = 100
+            pointsCount+=50
             
 
     if actionX == "left":
@@ -389,8 +416,16 @@ while True:
     screen.blit(text2, (screen.get_width()- 200, 10))
     screen.blit(text3, (screen.get_width()/2 - text3.get_width()/2, 10))
 
-    # if gameOver:                     #zatim se na hre pracuje takze to bude v komentu
-    #     break
+    if gameOver:                     #zatim se na hre pracuje takze to bude v komentu
+        
+        listDat = [
+            {
+                "name":name, "score":pointsCount
+            }
+            
+        ]
+        mycol.insert_many(listDat)
+        break
 
     
     pygame.display.flip()
