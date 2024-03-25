@@ -98,7 +98,9 @@ uri = "mongodb+srv://jiriprivratsky:8kp9pwcPtvazMCe3@cluster0.gvsfodh.mongodb.ne
 client = MongoClient(uri, server_api=ServerApi('1'))
 mydb = client["mydatabase"]
 mycol = mydb["players"]
-
+heighest = mycol.find_one(sort=[("score", -1)])
+highestScore = heighest["score"]
+highestName = heighest["name"]
 
 # Send a ping to confirm a successful connection
 try:
@@ -142,6 +144,7 @@ while True:
     text = font.render(f"Score: {pointsCount}", True, WHITE)
     text2 = font.render(textik, True, WHITE)
     text3 = font.render(levelDifficulty, True, WHITE)
+    text4 = font.render(f"Highest score {highestName}: {highestScore}", True, WHITE)
 
     #teleport na druhou stranu
     if (player_rect.x < 0-player.get_width()//2) and actionX == "left":
@@ -415,6 +418,7 @@ while True:
     screen.blit(text, (10, 10))
     screen.blit(text2, (screen.get_width()- 200, 10))
     screen.blit(text3, (screen.get_width()/2 - text3.get_width()/2, 10))
+    screen.blit(text4, (10, text.get_height()+20))
 
     if gameOver:                     #zatim se na hre pracuje takze to bude v komentu
         
