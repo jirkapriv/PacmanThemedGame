@@ -1,7 +1,7 @@
 PacMan
 #
 - In the first game you must enter your name into cmd.
-- You move with W = up, A = left, S = down, D = right.
+- You move with W = up, A = left, S = down, D = right. You can also use arrows
 - The game has 4 levels (Easy, Normal, Hard, Impossible), If you will beat the last level you are going to play the last level in loop and you will still gain score and make better highest score.
 - PowerUp = you get invisibility for an amount of time (The time is shown there in upper right corner of game).
 - Your score is written in upper left corner.
