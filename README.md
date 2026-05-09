@@ -1,11 +1,24 @@
-PacMan
-#
-- In the first game you must enter your name into cmd.
-- You move with W = up, A = left, S = down, D = right. You can also use arrows
-- The game has 4 levels (Easy, Normal, Hard, Impossible), If you will beat the last level you are going to play the last level in loop and you will still gain score and make better highest score.
-- PowerUp = you get invisibility for an amount of time (The time is shown there in upper right corner of game).
-- Your score is written in upper left corner.
-- Enemy speed is equal to difficulty (Easy = 1, Normal = 2, Hard = 3, Impossible = 4)
-- Player speed is equal to 4.
-#
-![Snímek obrazovky 2024-03-26 152743](https://github.com/jirkapriv/PacmanThemedGame/assets/115136363/4ebf4dbf-a01b-409f-905e-4a2af4d2ec3d)
+# Pacman program
+
+## Specifikace
+
+Program je implementací klasické hry PacMan.
+Hra je rozdělena do levelů s rostoucí obtížností na jedné mapě.
+Hráč ovládá postavičku, která sbírá jídlo (bílé body), zatímco 4 nepřátelé se ji snaží eliminovat.
+Cílem je dosáhnout levelu 4 a poté už jen nasbírat co nejvyšší skore...
+
+## Instalace a spuštění
+
+Program se spustí příkazem: `python main.py`
+
+## Požadavky
+
+Nainstalovaný Python 3.14.0
+Balíčky: pygame, pytmx
+Balíčky lze nainstalovat příkazem:
+pip install pygame pytmx
+    
+## Dokumentace
+
+* [Uživatelská dokumentace](docs/user.md)
+* [Programátorská dokumentace](docs/programmer.md)
