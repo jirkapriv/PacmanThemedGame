@@ -22,3 +22,5 @@ pip install pygame pytmx
 
 * [Uživatelská dokumentace](docs/user.md)
 * [Programátorská dokumentace](docs/programmer.md)
+
+<img width="827" height="860" alt="Snímek obrazovky 2026-05-09 v 10 53 15" src="https://github.com/user-attachments/assets/7401fe82-645a-4a19-8627-3718821f77be" />
